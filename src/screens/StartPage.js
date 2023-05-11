@@ -160,6 +160,7 @@ const StartPage = ({ navigation }) => {
           flexWrap: "wrap",
           margin: 30,
         }}
+        showsVerticalScrollIndicator={false}
       >
         {categoryList.map((item) => {
           return (

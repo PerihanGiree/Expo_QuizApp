@@ -21,7 +21,6 @@ const Home = ({ route, navigation }) => {
   //setValue(item);
   //};
   const { category, categoryName, difficult, checked } = route.params;
-  console.log(category);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -33,7 +32,7 @@ const Home = ({ route, navigation }) => {
   const [options, setOptions] = useState([]);
   const [score, setScore] = useState(0);
   const [sayi, setSayi] = useState(1);
-  const [count, setCount] = useState(10);
+  const [count, setCount] = useState(0);
   const getQuiz = async () => {
     const url = `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficult}&type=${checked}`;
     const res = await fetch(url);
@@ -41,10 +40,19 @@ const Home = ({ route, navigation }) => {
     console.log(data);
     setQuestions(data.results);
     setOptions(generateOptionsAndShuffle(data.results[0]));
+    setCount(10);
   };
   useEffect(() => {
     getQuiz();
   }, []);
+
+  useEffect(() => {
+    const counter = count > 0 && setInterval(() => {
+      setCount((prev) => prev - 1);
+  },1000);
+
+  return () => clearInterval(counter);
+  },[count])
 
   const handleNextPress = () => {
     setQues(ques + 1);
@@ -109,7 +117,7 @@ const Home = ({ route, navigation }) => {
           alignItems: "center",
         }}
       >
-        <TouchableOpacity onPress={timeOut()}>
+        <TouchableOpacity>
           <Text style={{ color: "white" }}>{count}</Text>
         </TouchableOpacity>
       </View>

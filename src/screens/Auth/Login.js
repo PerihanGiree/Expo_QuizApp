@@ -45,9 +45,9 @@ const Login = ({ navigation }) => {
       </View>
       <View
         style={{
-          width: 300,
+          width: 400,
           height: 300,
-          backgroundColor: "#EEEEEE",
+          backgroundColor: "#000",
           marginTop: -100,
           marginLeft: 30,
           borderRadius: 20,

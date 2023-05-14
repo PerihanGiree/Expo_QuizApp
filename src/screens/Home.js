@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import React from "react";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import Slider from "@react-native-community/slider";
@@ -27,29 +27,45 @@ const Home = ({ route, navigation }) => {
       headerShown: false,
     });
   }, []);
-  const [questions, setQuestions] = useState();
+  const [questions, setQuestions] = useState([]);
   const [ques, setQues] = useState(0);
   const [options, setOptions] = useState([]);
   const [score, setScore] = useState(0);
   const [sayi, setSayi] = useState(1);
   const [count, setCount] = useState(0);
+  const [color, setColor] = useState("white");
+  const [loading,setLoading] = useState(true);
+
   const getQuiz = async () => {
     const url = `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficult}&type=${checked}`;
     const res = await fetch(url);
     const data = await res.json();
-    console.log(data);
+    
     setQuestions(data.results);
     setOptions(generateOptionsAndShuffle(data.results[0]));
     setCount(10);
+    setLoading(false);
+    console.log("Soru zorluğu:" + difficult);
+    console.log("Soru categorisi:" + category);
   };
   useEffect(() => {
     getQuiz();
   }, []);
 
   useEffect(() => {
-    const counter = count > 0 && setInterval(() => {
-      setCount((prev) => prev - 1);
-  },1000);
+    const counter =
+      count > 0 &&
+      setInterval(() => {
+        setCount((prev) => prev - 1);
+      }, 1000);
+    if (count == 0 && questions.length > 0) {
+      if(ques !== 9){
+        setQues(ques + 1);
+        setOptions(generateOptionsAndShuffle(questions[ques + 1]));
+        setSayi(sayi + 1);
+        setCount(10);
+      }
+    }
 
   return () => clearInterval(counter);
   },[count])
@@ -88,16 +104,11 @@ const Home = ({ route, navigation }) => {
       score: score,
     });
   };
-  const timeOut = () => {
-    setTimeout(() => {
-      setCount(count - 1);
-    }, 1000);
-    if (count === 0) {
-      setQues(ques + 1);
-      setOptions(generateOptionsAndShuffle(questions[ques + 1]));
-      setSayi(sayi + 1);
-    }
-  };
+
+  if(loading){
+    return <ActivityIndicator size="large" />
+  }
+
   return (
     <View
       style={{
@@ -229,49 +240,32 @@ const Home = ({ route, navigation }) => {
                 justifyContent: "space-between",
               }}
             >
-              <View
-                style={{
-                  backgroundColor: "gray",
-                  marginTop: 40,
-                  marginLeft: 5,
-                  borderRadius: 10,
-                  width: 150,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 50,
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.optionButton}
-                  onPress={() => handleSelectedOption(options[2])}
-                >
-                  <Text style={styles.option}>
-                    c) {decodeURIComponent(options[2])}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  backgroundColor: "gray",
-                  marginTop: 40,
-                  marginLeft: 5,
-                  borderRadius: 10,
-                  width: 150,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: 50,
-                }}
-              >
-                <TouchableOpacity
-                  style={styles.optionButton}
-                  onPress={() => handleSelectedOption(options[3])}
-                >
-                  <Text style={styles.option}>
-                    d) {decodeURIComponent(options[3])}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+              <Text style={styles.option}>
+                b) {decodeURIComponent(options[1])}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={
+                color ? styles.optionContainerTrue : styles.optionContainerFalse
+              }
+              onPress={() => handleSelectedOption(options[2])}
+            >
+              <Text style={styles.option}>
+                c) {decodeURIComponent(options[2])}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={
+                color ? styles.optionContainerTrue : styles.optionContainerFalse
+              }
+              onPress={() => handleSelectedOption(options[3])}
+            >
+              <Text style={styles.option}>
+                d) {decodeURIComponent(options[3])}
+              </Text>
+            </TouchableOpacity>
           </View>
           <View
             style={{

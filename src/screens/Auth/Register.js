@@ -1,8 +1,21 @@
-import { View, Text, TouchableOpacity, Image, Dimensions,TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  TextInput,
+  StyleSheet,
+} from "react-native";
 import React, { useLayoutEffect } from "react";
-import { AntDesign, MaterialCommunityIcons, Octicons, Foundation } from "@expo/vector-icons";
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  Octicons,
+  Foundation,
+} from "@expo/vector-icons";
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const Register = ({ navigation }) => {
   useLayoutEffect(() => {
@@ -10,6 +23,15 @@ const Register = ({ navigation }) => {
       headerShown: false,
     });
   }, []);
+
+  function textinput(placeholder, icon) {
+    return (
+      <View style={styles.textinputContainer}>
+        {icon}
+        <TextInput placeholder={placeholder} style={styles.textinput} />
+      </View>
+    );
+  }
   return (
     <View
       style={{
@@ -22,7 +44,7 @@ const Register = ({ navigation }) => {
           alignItems: "center",
           height: "50%",
           marginTop: 0,
-          backgroundColor: "#01579B",
+          backgroundColor: "#FFD8B6",
           borderBottomLeftRadius: 20,
           borderBottomRightRadius: 20,
           justifyContent: "center",
@@ -45,7 +67,7 @@ const Register = ({ navigation }) => {
           />
         </View>
       </View>
-      <View style={{flex: 1, alignItems:'center'}}>
+      <View style={{ flex: 1, alignItems: "center" }}>
         <View
           style={{
             width: width - 50,
@@ -64,160 +86,48 @@ const Register = ({ navigation }) => {
             elevation: 9,
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 80,
-              width: "90%",
-              marginBottom: 10,
-              marginLeft: 6,
-            }}
-          >
+          {textinput(
+            "Full Name",
             <Octicons
               name="person"
               size={24}
               color="black"
-              style={{ padding: 10, position: "absolute", marginLeft: 20 }}
+              style={styles.icon}
             />
-            <TextInput
-              placeholder="Full Name"
-              style={{
-                paddingLeft: 40,
-                height: 50,
-                backgroundColor: "#cecece",
-                width: "100%",
-                padding: 10,
-                borderRadius: 20,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                margin: 10,
-                opacity: 0.5,
-                position: "absolute",
-                borderColor: "white",
-              }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 80,
-              width: "90%",
-              marginBottom: 10,
-              margin: 6,
-            }}
-          >
+          )}
+          {textinput(
+            "Email",
             <AntDesign
               name="mail"
               size={24}
               color="black"
-              style={{ padding: 10, position: "absolute", marginLeft: 20 }}
+              style={styles.icon}
             />
-            <TextInput
-              placeholder="Email"
-              style={{
-                paddingLeft: 40,
-                height: 30,
-                backgroundColor: "#cecece",
-                width: "100%",
-                // marginTop: 50,
-                padding: 10,
-                borderRadius: 20,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                margin: 10,
-                opacity: 0.5,
-                position: "absolute",
-              }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 80,
-              width: "90%",
-              marginBottom: 10,
-              margin: 6,
-            }}
-          >
+          )}
+          {textinput(
+            "Phone Number",
             <Foundation
               name="telephone"
               size={24}
               color="black"
-              style={{ padding: 10, position: "absolute", marginLeft: 20 }}
+              style={styles.icon}
             />
-            <TextInput
-              placeholder="Phone Number"
-              style={{                
-                paddingLeft: 40,
-                height: 30,
-                backgroundColor: "#cecece",
-                width: "100%",
-                // marginTop: 50,
-                padding: 10,
-                borderRadius: 20,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                margin: 10,
-                opacity: 0.5,
-                position: "absolute",
-                borderWidth: 0,
-              }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 80,
-              width: "90%",
-              marginBottom: 10,
-              margin: 6,
-            }}
-          >
+          )}
+          {textinput(
+            "Password",
             <MaterialCommunityIcons
               name="key-outline"
               size={24}
               color="black"
-              style={{ padding: 10, position: "absolute", marginLeft: 20 }}
+              style={styles.icon}
             />
-            <TextInput
-              placeholder="Password"
-              style={{
-                paddingLeft: 40,
-                height: 30,
-                backgroundColor: "#cecece",
-                width: "100%",
-                // marginTop: 50,
-                padding: 10,
-                borderRadius: 20,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                margin: 10,
-                opacity: 0.5,
-                position: "absolute",
-              }}
-              secureTextEntry
-            />
-          </View>
-          <Text style={{ marginTop: 15, marginLeft: 25 }}>Forgot Password?</Text>
+          )}
+          <Text style={{ marginTop: 15, marginLeft: 25 }}>
+            Forgot Password?
+          </Text>
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <TouchableOpacity
-              style={{
-                backgroundColor: "#01579B",
-                width: 120,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 20,
-                marginTop: 20,
-              }}
+              style={styles.button}
               onPress={() => navigation.navigate("Login")}
             >
               <Text style={{ color: "white" }}>Register</Text>
@@ -233,5 +143,41 @@ const Register = ({ navigation }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  icon: { padding: 10, position: "absolute", marginLeft: 20 },
+  textinput: {
+    paddingLeft: 50,
+    height: 50,
+    backgroundColor: "#cecece",
+    width: "100%",
+    padding: 10,
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    margin: 10,
+    opacity: 0.5,
+    position: "absolute",
+    borderColor: "white",
+  },
+  textinputContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 80,
+    width: "90%",
+    marginBottom: 10,
+    marginLeft: 6,
+  },
+  button: {
+    backgroundColor: "#ff5d8f",
+    width: 120,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    marginTop: 20,
+  },
+});
 
 export default Register;

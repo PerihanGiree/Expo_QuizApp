@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import React from "react";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 import Slider from "@react-native-community/slider";
@@ -20,30 +20,31 @@ const Home = ({ route, navigation }) => {
   //const item = await getItem();
   //setValue(item);
   //};
-  const { category, difficult } = route.params;
+  const { category, categoryName, difficult, checked } = route.params;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
-  const [questions, setQuestions] = useState();
+  const [questions, setQuestions] = useState([]);
   const [ques, setQues] = useState(0);
   const [options, setOptions] = useState([]);
   const [score, setScore] = useState(0);
   const [sayi, setSayi] = useState(1);
   const [count, setCount] = useState(0);
   const [color, setColor] = useState("white");
+  const [loading,setLoading] = useState(true);
+
   const getQuiz = async () => {
-    const url = `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficult}&type=multiple`;
+    const url = `https://opentdb.com/api.php?amount=10&category=${category}&difficulty=${difficult}&type=${checked}`;
     const res = await fetch(url);
     const data = await res.json();
-    console.log(data);
-    console.log(data.results);
+    
     setQuestions(data.results);
     setOptions(generateOptionsAndShuffle(data.results[0]));
     setCount(10);
-
+    setLoading(false);
     console.log("Soru zorluğu:" + difficult);
     console.log("Soru categorisi:" + category);
   };
@@ -57,17 +58,17 @@ const Home = ({ route, navigation }) => {
       setInterval(() => {
         setCount((prev) => prev - 1);
       }, 1000);
-    if (count == 0) {
-      setQues(ques + 1);
-      setOptions(generateOptionsAndShuffle(questions[ques + 1]));
-      setSayi(sayi + 1);
-      setCount(10);
+    if (count == 0 && questions.length > 0) {
+      if(ques !== 9){
+        setQues(ques + 1);
+        setOptions(generateOptionsAndShuffle(questions[ques + 1]));
+        setSayi(sayi + 1);
+        setCount(10);
+      }
     }
 
-    return () => {
-      clearInterval(counter);
-    };
-  }, [count]);
+  return () => clearInterval(counter);
+  },[count])
 
   const handleNextPress = () => {
     setQues(ques + 1);
@@ -85,26 +86,16 @@ const Home = ({ route, navigation }) => {
     const options = [..._question.incorrect_answers];
     options.push(_question.correct_answer);
     shuffleArray(options);
-    setColor(false);
-
     return options;
   };
 
   const handleSelectedOption = (_option) => {
     if (_option === questions[ques].correct_answer) {
-      if (difficult === "easy") {
-        setScore(score + 5);
-      } else if (difficult === "medium") {
-        setScore(score + 10);
-      } else {
-        setScore(score + 15);
-      }
-      setColor(true);
+      setScore(score + 10);
     }
     if (ques !== 9) {
       setQues(ques + 1);
       setOptions(generateOptionsAndShuffle(questions[ques + 1]));
-      setSayi(sayi + 1);
     }
   };
 
@@ -114,11 +105,15 @@ const Home = ({ route, navigation }) => {
     });
   };
 
+  if(loading){
+    return <ActivityIndicator size="large" />
+  }
+
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: "#FFD8B6",
+        backgroundColor: "#fa8231",
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -127,7 +122,7 @@ const Home = ({ route, navigation }) => {
         style={{
           width: 100,
           height: 100,
-          backgroundColor: "#FF8D00",
+          backgroundColor: "#ff5252",
           borderRadius: 100,
           justifyContent: "center",
           alignItems: "center",
@@ -137,17 +132,19 @@ const Home = ({ route, navigation }) => {
           <Text style={{ color: "white" }}>{count}</Text>
         </TouchableOpacity>
       </View>
-
+      {/*    <Text> {JSON.stringify(categoryName)}</Text>
+      <Text>{difficult}</Text>
+      <Text>{checked}</Text>*/}
       {questions && (
         <View
           style={{
             backgroundColor: "#ecf0f1",
             alignItems: "center",
             width: "90%",
-            height: "70%",
+            height: "60%",
             marginTop: 50,
             margin: 15,
-            borderRadius: 20,
+            borderRadius: 5,
             padding: 10,
 
             shadowColor: "#000",
@@ -161,10 +158,27 @@ const Home = ({ route, navigation }) => {
             elevation: 9,
           }}
         >
-          <View style={styles.questionContainer}>
+          <View
+            style={{
+              width: "94%",
+              backgroundColor: "#FEF2F4",
+              borderRadius: 5,
+              padding: 10,
+              marginTop: 20,
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.32,
+              shadowRadius: 5.46,
+
+              elevation: 9,
+            }}
+          >
             <Text
               style={{
-                color: "#555555",
+                color: "black",
                 letterSpacing: 1,
                 fontSize: 18,
               }}
@@ -172,26 +186,61 @@ const Home = ({ route, navigation }) => {
               {sayi}.{decodeURIComponent(questions[ques].question)}
             </Text>
           </View>
-          {/**Options */}
           <View style={styles.options}>
-            <TouchableOpacity
-              style={
-                color ? styles.optionContainerTrue : styles.optionContainerFalse
-              }
-              onPress={() => handleSelectedOption(options[0])}
+            <View
+              style={{
+                flexDirection: "row",
+                width: "80%",
+                justifyContent: "space-between",
+              }}
+            >
+              <View
+                style={{
+                  backgroundColor: "gray",
+                  marginTop: 40,
+                  marginLeft: 5,
+                  borderRadius: 10,
+                  width: 150,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 50,
+                }}
+              >
+                <TouchableOpacity
+                  style={{ margin: 10 }}
+                  onPress={() => handleSelectedOption(options[0])}
+                >
+                  <Text style={styles.option}>
+                    a) {decodeURIComponent(options[0])}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: "gray",
+                  marginTop: 40,
+                  marginLeft: 5,
+                  borderRadius: 10,
+                  width: 150,
+                  height: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => handleSelectedOption(options[1])}
+              >
+                <Text style={styles.option}>
+                  b) {decodeURIComponent(options[1])}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "80%",
+                justifyContent: "space-between",
+              }}
             >
               <Text style={styles.option}>
-                a) {decodeURIComponent(options[0])}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={
-                color ? styles.optionContainerTrue : styles.optionContainerFalse
-              }
-              onPress={() => handleSelectedOption(options[1])}
-            >
-              <Text style={{ marginLeft: 10 }}>
                 b) {decodeURIComponent(options[1])}
               </Text>
             </TouchableOpacity>
@@ -218,7 +267,6 @@ const Home = ({ route, navigation }) => {
               </Text>
             </TouchableOpacity>
           </View>
-
           <View
             style={{
               flex: 1,
@@ -257,53 +305,4 @@ const Home = ({ route, navigation }) => {
 
 export default Home;
 
-const styles = StyleSheet.create({
-  questionContainer: {
-    width: "94%",
-
-    // backgroundColor: "#FFD8B6",
-    borderRadius: 20,
-    padding: 10,
-    marginTop: 20,
-  },
-  optionContainerFalse: {
-    backgroundColor: "white",
-    marginTop: 40,
-    marginLeft: 5,
-    paddingLeft: 10,
-    borderRadius: 10,
-    width: 320,
-    height: 50,
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.32,
-    shadowRadius: 5.46,
-
-    elevation: 9,
-    //alignItems: "center",
-  },
-  optionContainerTrue: {
-    backgroundColor: "blue",
-    marginTop: 40,
-    marginLeft: 5,
-    paddingLeft: 10,
-    borderRadius: 10,
-    width: 320,
-    height: 50,
-    justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.32,
-    shadowRadius: 5.46,
-
-    elevation: 9,
-    //alignItems: "center",
-  },
-});
+const styles = StyleSheet.create({});

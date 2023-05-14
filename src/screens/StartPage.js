@@ -134,9 +134,6 @@ const StartPage = ({ navigation }) => {
       image: require("../assets/images/animasyon.png"),
     },
   ];
-  const [amount, setAmount] = useState();
-  const [category, setCategory] = useState();
-  const [difficult, setDifficult] = useState();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -171,13 +168,13 @@ const StartPage = ({ navigation }) => {
                 height: 130,
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "#01579B",
+                backgroundColor: "gray",
                 //   opacity: 0.5,
                 margin: 10,
                 borderRadius: 10,
               }}
               onPress={() =>
-                navigation.navigate("SelectLevel", {
+                navigation.navigate("Level", {
                   category: item.id,
                   categoryName: item.name,
                 })
@@ -187,26 +184,11 @@ const StartPage = ({ navigation }) => {
                 source={item.image}
                 resizeMode="contain"
                 style={{
-                  borderColor: "black",
-                  borderWidth: 2,
                   width: 260,
                   height: 130,
                   margin: 10,
                 }}
               >
-                {/**   <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: "#cccccc",
-                    borderRadius: 100,
-                    padding: 2,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {item.icon}
-                </View> */}
                 <View
                   style={{
                     flex: 1,
@@ -227,21 +209,6 @@ const StartPage = ({ navigation }) => {
           );
         })}
       </ScrollView>
-      {/*   <View
-        style={{
-          width: 270,
-          height: 40,
-          backgroundColor: "orange",
-          margin: 10,
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 5,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.navigate("SelectLevels")}>
-          <Text style={{ color: "white" }}>Skip</Text>
-        </TouchableOpacity>
-      </View>*/}
     </SafeAreaView>
   );
 };
@@ -253,6 +220,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#FFD8B6",
   },
 });

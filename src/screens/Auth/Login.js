@@ -7,11 +7,10 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 const { width } = Dimensions.get("window");
-
 const Login = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -19,14 +18,12 @@ const Login = ({ navigation }) => {
     });
   }, []);
 
-  function textinput(placeholder, icon) {
-    return (
-      <View style={styles.textinputContainer}>
-        {icon}
-        <TextInput placeholder={placeholder} style={styles.textinput} />
-      </View>
-    );
-  }
+  const [email, setEmail] = useState("");
+  const [password, setPasssword] = useState("");
+  const auth = getAuth;
+  const handlelogin = () => {
+    signInWithEmailAndPassword(auth, email, password);
+  };
   return (
     <View
       style={{
@@ -81,33 +78,41 @@ const Login = ({ navigation }) => {
             elevation: 9,
           }}
         >
-          {textinput(
-            "Email",
+          <View style={styles.textinputContainer}>
             <AntDesign
               name="mail"
               size={24}
               color="black"
               style={styles.icon}
             />
-          )}
-
-          {textinput(
-            "Password",
+            <TextInput
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              placeholder={"Email"}
+              style={styles.textinput}
+            />
+          </View>
+          <View style={styles.textinputContainer}>
             <MaterialCommunityIcons
               name="key-outline"
               size={24}
               color="black"
               style={styles.icon}
             />
-          )}
+            <TextInput
+              value={password}
+              onChange={(text) => setPasssword(text)}
+              placeholder={"Password"}
+              style={styles.textinput}
+              secureTextEntry
+            />
+          </View>
+
           <Text style={{ marginTop: 15, marginLeft: 25 }}>
             Forgot Password?
           </Text>
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate("StartPage")}
-            >
+            <TouchableOpacity style={styles.button} onPress={handlelogin}>
               <Text style={{ color: "white" }}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Register")}>

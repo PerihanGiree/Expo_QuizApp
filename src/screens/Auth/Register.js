@@ -7,31 +7,27 @@ import {
   TextInput,
   StyleSheet,
 } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import {
   AntDesign,
   MaterialCommunityIcons,
   Octicons,
   Foundation,
 } from "@expo/vector-icons";
-
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 const { width } = Dimensions.get("window");
-
 const Register = ({ navigation }) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
-
-  function textinput(placeholder, icon) {
-    return (
-      <View style={styles.textinputContainer}>
-        {icon}
-        <TextInput placeholder={placeholder} style={styles.textinput} />
-      </View>
-    );
-  }
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const auth = getAuth();
+  const handleRegister = () => {
+    createUserWithEmailAndPassword(auth, email, password);
+  };
   return (
     <View
       style={{
@@ -86,7 +82,36 @@ const Register = ({ navigation }) => {
             elevation: 9,
           }}
         >
-          {textinput(
+          <View style={styles.textinputContainer}>
+            <AntDesign
+              name="mail"
+              size={24}
+              color="black"
+              style={styles.icon}
+            />
+            <TextInput
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              placeholder={"Email"}
+              style={styles.textinput}
+            />
+          </View>
+          <View style={styles.textinputContainer}>
+            <MaterialCommunityIcons
+              name="key-outline"
+              size={24}
+              color="black"
+              style={styles.icon}
+            />
+            <TextInput
+              value={password}
+              onChange={(text) => setPassword(text)}
+              placeholder={"Password"}
+              style={styles.textinput}
+              secureTextEntry
+            />
+          </View>
+          {/* {textinput(
             "Full Name",
             <Octicons
               name="person"
@@ -122,20 +147,10 @@ const Register = ({ navigation }) => {
               style={styles.icon}
             />
           )}
-          <Text style={{ marginTop: 15, marginLeft: 25 }}>
-            Forgot Password?
-          </Text>
+          */}
           <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => navigation.navigate("Login")}
-            >
+            <TouchableOpacity style={styles.button} onPress={handleRegister}>
               <Text style={{ color: "white" }}>Register</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={{ color: "gray" }}>
-                Don't have a Account? Register
-              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -170,13 +185,13 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   button: {
+    margin: 50,
     backgroundColor: "#ff5d8f",
     width: 120,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 20,
-    marginTop: 20,
   },
 });
 

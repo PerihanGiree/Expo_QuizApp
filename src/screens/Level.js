@@ -9,21 +9,28 @@ const Level = ({ route, navigation }) => {
   }, []);
   const { category, categoryName } = route.params;
   const [difficult, setDifficult] = useState("");
+  const [number, setNumber] = useState("");
   const level = [
     {
       key: "easy",
       name: "Easy",
+      questionNumber: 10,
     },
     {
       key: "medium",
       name: "Medium",
+      questionNumber: 20,
     },
     {
       key: "hard",
       name: "Hard",
+      questionNumber: 30,
     },
   ];
-
+  const selectLevel = (key, number) => {
+    setDifficult(key);
+    setNumber(number);
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "#FFD8B6" }}>
       <View
@@ -43,8 +50,7 @@ const Level = ({ route, navigation }) => {
                 height: 70,
                 justifyContent: "center",
                 alignItems: "center",
-                // backgroundColor: "gray",
-                //   opacity: 0.5,
+                opacity: 0.5,
                 margin: 10,
                 borderRadius: 100,
                 shadowColor: "#000",
@@ -57,9 +63,10 @@ const Level = ({ route, navigation }) => {
 
                 elevation: 9,
               }}
-              onPress={() => setDifficult(item.key)}
+              onPress={() => selectLevel(item.key, item.questionNumber)}
             >
               <Text>{item.name}</Text>
+              <Text>{item.questionNumber}</Text>
             </TouchableOpacity>
           );
         })}
@@ -80,6 +87,7 @@ const Level = ({ route, navigation }) => {
               category: category,
               categoryName: categoryName,
               difficult: difficult,
+              number: number,
             });
           }}
         >
